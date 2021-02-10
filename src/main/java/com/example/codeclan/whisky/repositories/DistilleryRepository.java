@@ -9,6 +9,7 @@ public interface DistilleryRepository extends JpaRepository<Distillery, Long> {
 
     // get all distilleries for a particular region
     List<Distillery> findByRegionIgnoreCase(String regionName);
+    List<Distillery> findByWhiskiesAge(int age);
 
 
 

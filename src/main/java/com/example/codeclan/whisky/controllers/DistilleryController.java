@@ -24,20 +24,22 @@ public class DistilleryController {
     @Autowired
     WhiskyRepository whiskyRepository;
 
-    // GET /distilleries
-    // GET /distillers?region=Highland          findByRegion
+
     @GetMapping(value = "/distilleries")
     public ResponseEntity<List<Distillery>> getAllDistilleries(
-            @RequestParam(name = "region", required = false) String regionName
+            @RequestParam(name = "region", required = false) String regionName,
+            @RequestParam(name = "whiskiesAge", required = false) Integer whiskiesAge
     ) {
         if (regionName != null) {
             List<Distillery> distilleryByRegion = distilleryRepository.findByRegionIgnoreCase(regionName);
             return new ResponseEntity<>(distilleryByRegion, HttpStatus.OK);
         }
-        {
-            List<Distillery> allDistilleries = distilleryRepository.findAll();
-            return new ResponseEntity<>(allDistilleries, HttpStatus.OK);
+        if (whiskiesAge != null) {
+            List<Distillery> distilleryByWhiskiesAge = distilleryRepository.findByWhiskiesAge(whiskiesAge);
+            return new ResponseEntity<>(distilleryByWhiskiesAge, HttpStatus.OK);
         }
+        List<Distillery> allDistilleries = distilleryRepository.findAll();
+        return new ResponseEntity<>(allDistilleries, HttpStatus.OK);
     }
 
     @GetMapping(value = "/distilleries/{id}")
@@ -45,7 +47,4 @@ public class DistilleryController {
         Optional<Distillery> distillery = distilleryRepository.findById(id);
         return new ResponseEntity<>(distillery, HttpStatus.OK);
     }
-
-
-
 }
