@@ -22,12 +22,12 @@ public class Distillery {
 
     @OneToMany(mappedBy = "distillery")
     @JsonIgnoreProperties({"distillery"})
-    private List<Whisky> whiskys;
+    private List<Whisky> whiskies;
 
     public Distillery(String name, String region) {
         this.name = name;
         this.region = region;
-        this.whiskys = whiskys;
+        this.whiskies = whiskies;
     }
 
     public Distillery() {
@@ -57,11 +57,11 @@ public class Distillery {
         this.region = region;
     }
 
-    public List<Whisky> getWhiskys() {
-        return whiskys;
+    public List<Whisky> getWhiskies() {
+        return whiskies;
     }
 
-    public void setWhiskys(List<Whisky> whiskys) {
-        this.whiskys = whiskys;
+    public void setWhiskies(List<Whisky> whiskies) {
+        this.whiskies = whiskies;
     }
 }

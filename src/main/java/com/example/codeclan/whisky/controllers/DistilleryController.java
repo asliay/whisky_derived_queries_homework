@@ -41,7 +41,16 @@ public class DistilleryController {
     }
 
     @GetMapping(value = "/distilleries/{id}")
-    public ResponseEntity<Optional<Distillery>> getDistillery(@PathVariable Long distilleryId) {
-        return new ResponseEntity<>(distilleryRepository.findById(distilleryId), HttpStatus.OK);
+    public ResponseEntity<Optional<Distillery>> getDistillery(@PathVariable Long id) {
+        Optional<Distillery> distillery = distilleryRepository.findById(id);
+        return new ResponseEntity<>(distillery, HttpStatus.OK);
     }
+
+    //GET whiskies from specific distillery
+    @GetMapping(value = "/distilleries/{id}/whiskies")
+    public ResponseEntity<List<Whisky>> getWhiskiesFromDistilleryId(@PathVariable Long id) {
+        List<Whisky> whiskies = whiskyRepository.findByDistilleryId(id);
+        return new ResponseEntity<>(whiskies, HttpStatus.OK);
+    }
+
 }
