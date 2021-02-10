@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,16 +25,35 @@ public class WhiskyController {
     DistilleryRepository distilleryRepository;
 
     // GET /whiskies
-    // GET /whiskies?year=2018      findByYear
+    // GET /whiskies?year=2018                      findByYear
+    // GET /whiskies?age=5                          findByAge
+    // GET /whiskies?distilleryName=Laphroaig       findByDistilleryNameIgnoreCase
+    // GET /whiskies?distilleryName=Laphroaig&age=5 findByDistilleryNameIgnoreCaseAndAge
 
     @GetMapping(value = "/whiskies")
     public ResponseEntity<List<Whisky>> getWhiskies(
-            @RequestParam(name = "year", required = false) Integer year
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "distilleryName", required = false) String distilleryName,
+            @RequestParam(name = "age", required = false) Integer age,
+            @RequestParam(name = "whiskyName", required = false) String whiskyName
     ) {
+        if (distilleryName != null && age != null) {
+            List<Whisky> whiskyByDistilleryAndAge =
+                    whiskyRepository.findByDistilleryNameIgnoreCaseAndAge(distilleryName, age);
+            return new ResponseEntity<>(whiskyByDistilleryAndAge, HttpStatus.OK);
+        }
         if (year != null) {
-                List<Whisky> whiskyByYear = whiskyRepository.findByYear(year);
-                return new ResponseEntity<>(whiskyByYear, HttpStatus.OK);
-            }
+            List<Whisky> whiskyByYear = whiskyRepository.findByYear(year);
+            return new ResponseEntity<>(whiskyByYear, HttpStatus.OK);
+        }
+        if (distilleryName !=null) {
+            List<Whisky> whiskyByDistillery = whiskyRepository.findByDistilleryNameIgnoreCase(distilleryName);
+            return new ResponseEntity<>(whiskyByDistillery, HttpStatus.OK);
+        }
+        if (age != null) {
+            List<Whisky> whiskyByAge = whiskyRepository.findByAge(age);
+            return new ResponseEntity<>(whiskyByAge, HttpStatus.OK);
+        }
         {
             List<Whisky> allWhiskies = whiskyRepository.findAll();
             return new ResponseEntity<>(allWhiskies, HttpStatus.OK);
@@ -41,7 +61,9 @@ public class WhiskyController {
     }
 
     @GetMapping(value = "/whiskies/{id}")
-    public ResponseEntity<Optional<Whisky>> getWhisky(Long whiskyId) {
-        return new ResponseEntity<>(whiskyRepository.findById(whiskyId), HttpStatus.OK);
+    public ResponseEntity<Optional<Whisky>> getWhisky(@PathVariable Long id) {
+        Optional<Whisky> whisky = whiskyRepository.findById(id);
+        return new ResponseEntity<>(whisky, HttpStatus.OK);
     }
+
 }
